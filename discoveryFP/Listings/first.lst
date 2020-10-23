@@ -1,0 +1,104 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 area             appcode, CODE, READONLY
+    2 00000000                 export           __main
+    3 00000000                 ENTRY
+    4 00000000         __main  function
+    5 00000000 ED9F 2A10       VLDR.F32         s4, = 0     ; Result
+    6 00000004 EEF0 2A00       VLDR.F32         s5, = 2     ; value x
+    7 00000008 EEB7 7A00       VLDR.F32         s14, = 1    ; denominator
+    8 0000000C EDDF 3A0D       VLDR.F32         s7, = 0     ; intermediate regi
+                                                            ster a
+    9 00000010 EEB7 4A00       VLDR.F32         s8, = 1     ; flag for the sign
+                                                             
+   10 00000014 EEF7 4A00       VLDR.F32         s9, = 1     ; for increment
+   11 00000018 EE32 2A82       VADD.F32         s4, s5, s4  ; first number
+   12 0000001C         
+   13 0000001C         ; This loop will calculate each term one by and 
+   14 0000001C         ; either add or substract from the result register s4
+   15 0000001C         
+   16 0000001C         
+   17 0000001C EE62 3AA2 
+                       loop    VMUL.F32         s7, s5, s5  ;     ; Calculate t
+                                                            he next term od the
+                                                             series 
+   18 00000020 EE37 7A24       VADD.F32         s14, s14, s9 ; increment the de
+                                                            nominator value
+   19 00000024 EEC3 3A87       VDIV.F32         s7, s7, s14 ; divide the denomi
+                                                            nator, and the resu
+                                                            lt will be next ter
+                                                            m
+   20 00000028         
+   21 00000028         ; This s7 register holds the next term of the series whi
+                       ch has to either added or subtracted 
+   22 00000028 EEB4 4A64       VCMP.F32         s8, s9      ; For this s8 is us
+                                                            ed as a flag regist
+                                                            er which toogles be
+                                                            tween 0, 1 
+   23 0000002C EEF1 FA10       VMRS             APSR_nzcv,FPSCR
+   24 00000030 BF19 EE32 
+              2A23             VADDNE.F32       s4, s4, s7  ; then the next ter
+                                                            m is added if the s
+                                                            8 is equal to 0
+   25 00000036 EE34 4A24       VADDNE.F32       s8, s8, s9
+   26 0000003A EE32 2A63       VSUBEQ.F32       s4, s4, s7  ; then the next ter
+                                                            m is substracted if
+                                                             the s8 is equal to
+                                                             1
+   27 0000003E EE34 4A64       VSUBEQ.F32       s8, s8, s9
+   28 00000042 E7EB            B                loop
+   29 00000044         
+   30 00000044         ; After testing the values for two series results are lo
+                       g(1 + 0.5 ) = 0.17609 and log (1 + 2) = 0.47712
+   31 00000044                 endfunc
+   32 00000044                 end
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\first.d -o.\objects\first.o -I.\RTE\_Target_1 -I"C
+:\Users\zahid faiz\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include" 
+-I"C:\Users\zahid faiz\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.15.0\Driver
+s\CMSIS\Device\ST\STM32F4xx\Include" --predefine="__EVAL SETA 1" --predefine="_
+_UVISION_VERSION SETA 532" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx 
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\first.lst first.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+__main 00000000
+
+Symbol: __main
+   Definitions
+      At line 4 in file first.s
+   Uses
+      At line 2 in file first.s
+Comment: __main used once
+appcode 00000000
+
+Symbol: appcode
+   Definitions
+      At line 1 in file first.s
+   Uses
+      None
+Comment: appcode unused
+loop 0000001C
+
+Symbol: loop
+   Definitions
+      At line 17 in file first.s
+   Uses
+      At line 28 in file first.s
+Comment: loop used once
+3 symbols
+340 symbols in table
