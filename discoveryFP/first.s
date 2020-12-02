@@ -3,18 +3,19 @@
 	 ENTRY 
 __main  function		 
        VLDR.F32   s4, = 0	; Result
-       VLDR.F32   s5, = 2	; value x
+       VLDR.F32   s5, =0.3	; value x
 	   VLDR.F32   s14, = 1	; denominator
 	   VLDR.F32   s7, = 0	; intermediate register a
 	   VLDR.F32	  s8, = 1	; flag for the sign 
 	   VLDR.F32   s9, = 1   ; for increment
 	   VADD.F32	  s4, s5, s4 ; first number
-	
+	   VLDR.F32   s10, =0.3
 	; This loop will calculate each term one by and 
 	; either add or substract from the result register s4
 	
 	   
-loop	VMUL.F32 s7, s5, s5 ;     ; Calculate the next term od the series 
+loop	VMUL.F32 s10, s10, s5
+		VMUL.F32 s7, s10, s9     ; Calculate the next term od the series 
 		VADD.F32 s14, s14, s9		; increment the denominator value
 		VDIV.F32 s7, s7, s14		; divide the denominator, and the result will be next term
 			
